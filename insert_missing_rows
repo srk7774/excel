@@ -1,0 +1,32 @@
+#alt + f11 -> insert -> module -> paste -> f5 -> selection of cells
+Sub InsertValueBetween()
+'Updateby Extendoffice
+Dim WorkRng As Range
+Dim Rng As Range
+Dim outArr As Variant
+Dim dic As Variant
+Set dic = CreateObject("Scripting.Dictionary")
+'On Error Resume Next
+xTitleId = "KutoolsforExcel"
+Set WorkRng = Application.Selection
+Set WorkRng = Application.InputBox("Range", xTitleId, WorkRng.Address, Type:=8)
+num1 = WorkRng.Range("A1").Value
+num2 = WorkRng.Range("A" & WorkRng.Rows.Count).Value
+interval = num2 - num1
+ReDim outArr(1 To interval + 1, 1 To 2)
+For Each Rng In WorkRng
+    dic(Rng.Value) = Rng.Offset(0, 1).Value
+Next
+For i = 0 To interval
+    outArr(i + 1, 1) = i + num1
+    If dic.Exists(i + num1) Then
+        outArr(i + 1, 2) = dic(i + num1)
+    Else
+        outArr(i + 1, 2) = ""
+    End If
+Next
+With WorkRng.Range("A1").Resize(UBound(outArr, 1), UBound(outArr, 2))
+    .Value = outArr
+    .Select
+End With
+End Sub
